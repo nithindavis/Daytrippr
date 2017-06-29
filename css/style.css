@@ -21,29 +21,29 @@ time, mark, audio, video {
 
 
 body {
-  background-color: #f8f8f8;
-  font-family: 'Droid Serif', serif;
+  background-color: #f3f3f3;
+  font-family: 'Open Sans', sans-serif;
 }
 
-/*#preview {
-  height: 300px;
-  width: 500px;
-  background-color: #ccc;
-  display: block;
-}*/
 #header {
   width: 100%;
-  height: 80px;
+  height: 73px;
   position: fixed;
   top: 0px;
   left: 0px;
   z-index: 2;
+	background-color: #fff;
+	box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.04);
 }
 
 #title {
-  font-family: 'Bangers', cursive;
+	font-family: 'Suez One', serif;
+	color: #333;
   display: inline;
-  font-size: 36px;
+  font-size: 48px;
+	position: relative;
+	bottom: 26px;
+
 }
 
 #sideBar {
@@ -54,12 +54,33 @@ body {
   position: fixed;
   top: 0px;
   left: 0px;
+
+	margin-top: 73px;
 }
 
-section {
+.item {
+	width: 100%;
+	height: 80px;
+
+	text-align: center;
+	line-height: 87px;
+
+	border-bottom: 1px solid #303544;
+}
+.item:hover {
+	background-color: #303544;
+}
+.item:active {
+	background-color: #f04b4b;
+}
+.item:active img{
+	filter: brightness(100);
+}
+#ContentArea {
   margin-left: 80px;
-  margin-top: 100px;
+  margin-top: 99px;
   overflow: hidden;
+	/*position: relative;*/
 }
 
 .comicFrame {
@@ -68,30 +89,66 @@ section {
 
   color: rgba(0, 0, 0, 0.3);
 
-  height: 240px;
+  height: 300px;
   background-position: center;
   background-size: cover;
 
-  margin: 10px;
+  margin-left: 2%;
+	margin-bottom: 2%;
 
 
   display: inline-block;
+	float: left;
 
 
 }
+.comicFrame p {
+	font-size: 12px;
+}
 
 #frame1 {
-  width: 97%;
+  width: 95.6%;
 }
 #frame2 {
   width: 60%;
 }
 #frame3 {
-  width: 35%;
+  width: 33.2%;
 }
 #frame4 {
-  width: 35%;
+  width: 33.2%;
 }
 #frame5 {
   width: 60%;
+}
+
+#narrative {
+	background-color:#eff2be;
+	border: 1px solid #657008;
+	font-family: 'Bangers', cursive;
+	width: 400px;
+	height:50px; padding: 4px;
+	position: absolute;
+	top:100px;
+	left: 100px;
+}
+
+#blam {
+	width: 380px;
+	height: 170px;
+
+	background-image: url("..//img/blam.svg");
+
+	position: absolute;
+	top:100px;
+	left: 100px;
+}
+
+.closeButton {
+	background-color: red;
+	height: 20px;
+	width: 20px;
+	position: absolute;
+	top: 0px;
+	right: 0px;
 }
