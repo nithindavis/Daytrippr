@@ -1,4 +1,6 @@
+var dragObj = null;
 
+//upload and display background images for the frames locally
 document.getElementById("input1").addEventListener("change", setImage, false);
 document.getElementById("input2").addEventListener("change", setImage, false);
 document.getElementById("input3").addEventListener("change", setImage, false);
@@ -11,90 +13,111 @@ function setImage() {
   }
 }
 
-//item1 - narrative click
-document.getElementById("item1").addEventListener("click", createNarrative, false);
-document.getElementById("item2").addEventListener("click", createBlam, false);
+//on click on sidebar - create Assets
+document.getElementById("item1").addEventListener("click", function(){createAsset("narrative",true);}, false);
+document.getElementById("item2").addEventListener("click", function(){createAsset("blam", false);}, false);
+document.getElementById("item3").addEventListener("click", function(){createAsset("speachBubble", true);}, false);
+document.getElementById("item4").addEventListener("click", function(){createAsset("trollFace", false);}, false);
+document.getElementById("item5").addEventListener("click", function(){createAsset("bitchPlease", false);}, false);
 
-function createBlam() {
-  var blam = document.createElement("div");
-  blam.setAttribute("id","blam");
+
+function createAsset(assetName, withTextNode) {
+  var editMode = false;
+
+  var asset = document.createElement("div");
+  asset.setAttribute("id",assetName);
 
   var closeButton = document.createElement("div");
   closeButton.setAttribute("class","closeButton");
   closeButton.setAttribute("style","visibility:hidden;");
-  blam.appendChild(closeButton);
+  asset.appendChild(closeButton);
+
+  if(withTextNode) {
+    //
+
+    //text content area
+    // var newContent = document.createTextNode("Hi, I'm a new Narrative Box");
+    // asset.appendChild(newContent);
+
+    var textContent = document.createElement("p");
+    textContent.setAttribute("class","assetText");
+    var actualContent = document.createTextNode("Art though wearing your mother's drapes?");
+    textContent.appendChild(actualContent);
+    asset.appendChild(textContent);
+
+    //edit button
+    var editButton = document.createElement("div");
+    editButton.setAttribute("class","editButton");
+    editButton.setAttribute("style","visibility:hidden");
+    asset.appendChild(editButton);
+
+    asset.addEventListener("mouseover", function(){showControls(editButton);}, false);
+    asset.addEventListener("mouseout", function(){hideControls(editButton);}, false);
+
+    editButton.addEventListener("click", function(){editMode=true;editTextNode(textContent);}, false);
+  }
 
   var targetArea = document.getElementById("ContentArea");
-  targetArea.appendChild(blam);
+  targetArea.appendChild(asset);
 
-  blam.addEventListener("mousedown", drag, false);
+
+  asset.addEventListener("mousedown", function(){drag(window.event,this,editMode);}, false);
 
   closeButton.addEventListener("click", closeParent, false);
 
-  blam.addEventListener("mouseover", showControls, false);
-  blam.addEventListener("mouseout", hideControls, false);
-
+  asset.addEventListener("mouseover", function(){showControls(closeButton);}, false);
+  asset.addEventListener("mouseout", function(){hideControls(closeButton);}, false);
 }
 
-function createNarrative() {
-  var narr = document.createElement("div");
-  var newContent = document.createTextNode("Hi, I'm a new Narrative Box");
-  narr.appendChild(newContent);
-  var closeButton = document.createElement("div");
-  closeButton.setAttribute("class","closeButton");
-  closeButton.setAttribute("style","visibility:hidden;");
-  narr.appendChild(closeButton);
+function editTextNode(obj) {
+  obj.setAttribute("contenteditable","true");
 
-
-  narr.setAttribute("id","narrative");
-  // narr.setAttribute("contenteditable","true");
-
-  var targetArea = document.getElementById("ContentArea");
-  targetArea.appendChild(narr);
-
-  narr.addEventListener("mousedown", drag, false);
-
-  closeButton.addEventListener("click", closeParent, false);
-
-  narr.addEventListener("mouseover", showControls, false);
-  narr.addEventListener("mouseout", hideControls, false);
 }
 
 function closeParent() {
   this.parentElement.parentElement.removeChild(this.parentElement);
 }
-function showControls() {
-  this.childNodes[1].setAttribute("style","visibility:visible;");
+
+function showControls(control) {
+  control.setAttribute("style","visibility:visible;");
 }
-function hideControls(){
-  this.childNodes[1].setAttribute("style","visibility:hidden;");
+function hideControls(control){
+  control.setAttribute("style","visibility:hidden;");
 }
 
-var dragObj = null;
 
-function drag(e) {
-  var xOff = e.pageX-this.getBoundingClientRect().left;
-  var yOff = e.pageY-this.getBoundingClientRect().top;
 
-  dragObj = this;
-  this.style.position = "absolute";
+function drag(e,obj,editMODE) {
+  var xOff = e.pageX-obj.getBoundingClientRect().left;
+  var yOff = e.pageY-obj.getBoundingClientRect().top;
+
+
+  dragObj = obj;
+  obj.style.position = "absolute";
 
   window.onmouseup = function(e) {
     dragObj = null;
+    return;
   }
 
-  this.onmouseup = function(e) {
+  obj.onmouseup = function(e) {
     dragObj = null;
+    return;
   }
 
-  this.onmousemove = function(e) {
+  if(editMODE==true) {
+    dragObj = null;
+    return;
+  }
+
+  obj.onmousemove = function(e) {
     var x = e.pageX;
     var y = e.pageY;
     if(dragObj==null) {
       return;
     }
-    this.style.left = (x - xOff) + "px";
-    this.style.top = (y - yOff) + "px";
+    obj.style.left = (x - xOff) + "px";
+    obj.style.top = (y - yOff) + "px";
   }
 
 
