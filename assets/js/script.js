@@ -1,11 +1,21 @@
 var dragObj = null;
 
+$("input[type=file]").on("change", function() {
+  // assuming there will only be a single file.
+  var file = this.files[0];       // Q: can you do something with the other attributes ?
+
+  $(this).parent().css({
+    // URL object support - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+    "background-image": "url("+ URL.createObjectURL(file) +")"
+  });
+});
+
 //upload and display background images for the frames locally
-document.getElementById("input1").addEventListener("change", setImage, false);
-document.getElementById("input2").addEventListener("change", setImage, false);
-document.getElementById("input3").addEventListener("change", setImage, false);
-document.getElementById("input4").addEventListener("change", setImage, false);
-document.getElementById("input5").addEventListener("change", setImage, false);
+// document.getElementById("input1").addEventListener("change", setImage, false);
+// document.getElementById("input2").addEventListener("change", setImage, false);
+// document.getElementById("input3").addEventListener("change", setImage, false);
+// document.getElementById("input4").addEventListener("change", setImage, false);
+// document.getElementById("input5").addEventListener("change", setImage, false);
 
 function setImage() {
   if(this.files) {
