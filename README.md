@@ -2,7 +2,7 @@
 
 The age of the Jaguar.
 
-## isntall
+## install
 
 ```sh
 bower install --save
