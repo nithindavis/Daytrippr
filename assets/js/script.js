@@ -10,18 +10,6 @@ $("input[type=file]").on("change", function() {
   });
 });
 
-//upload and display background images for the frames locally
-// document.getElementById("input1").addEventListener("change", setImage, false);
-// document.getElementById("input2").addEventListener("change", setImage, false);
-// document.getElementById("input3").addEventListener("change", setImage, false);
-// document.getElementById("input4").addEventListener("change", setImage, false);
-// document.getElementById("input5").addEventListener("change", setImage, false);
-
-function setImage() {
-  if(this.files) {
-    this.parentElement.setAttribute("style",("background-image: url(" + (URL.createObjectURL(this.files[0])) + ");"));
-  }
-}
 
 //on click on sidebar - create Assets
 document.getElementById("item1").addEventListener("click", function(){createAsset("narrative",true);}, false);
