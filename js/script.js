@@ -8,7 +8,7 @@ document.getElementById("input4").addEventListener("change", setImage, false);
 document.getElementById("input5").addEventListener("change", setImage, false);
 
 function setImage() {
-  if(this.files){
+  if(this.files) {
     this.parentElement.setAttribute("style",("background-image: url(" + (URL.createObjectURL(this.files[0])) + ");"));
   }
 }
@@ -90,7 +90,6 @@ function hideControls(control){
 function drag(e,obj,editMODE) {
   var xOff = e.pageX-obj.getBoundingClientRect().left;
   var yOff = e.pageY-obj.getBoundingClientRect().top;
-
 
   dragObj = obj;
   obj.style.position = "absolute";
