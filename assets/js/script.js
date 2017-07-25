@@ -29,7 +29,7 @@ $(function() {
 
     asset.append(btn_close, btn_edit);
     asset.appendTo($("section#content"));
-    asset.draggable();
+    asset.draggable({ containment: "section#content", scroll: false });
     // make asset editable
   });
 
