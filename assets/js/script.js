@@ -32,18 +32,10 @@ $(function() {
   });
 
   // make assset draggable
+  // make asset editable
 });
 
 var dragObj = null;
-
-
-//on click on sidebar - create Assets
-// document.getElementById("item1").addEventListener("click", function(){createAsset("narrative",true);}, false);
-// document.getElementById("item2").addEventListener("click", function(){createAsset("blam", false);}, false);
-// document.getElementById("item3").addEventListener("click", function(){createAsset("speachBubble", true);}, false);
-// document.getElementById("item4").addEventListener("click", function(){createAsset("trollFace", false);}, false);
-// document.getElementById("item5").addEventListener("click", function(){createAsset("bitchPlease", false);}, false);
-
 
 function createAsset(assetName, withTextNode) {
   var editMode = false;

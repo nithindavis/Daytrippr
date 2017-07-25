@@ -47,7 +47,7 @@ body {
 
 }
 
-#sideBar {
+.sidebar {
   background-color: #272930;
   width: 80px;
   height: 100%;
