@@ -29,10 +29,10 @@ $(function() {
 
     asset.append(btn_close, btn_edit);
     asset.appendTo($("section#content"));
+    asset.draggable();
+    // make asset editable
   });
 
-  // make assset draggable
-  // make asset editable
 });
 
 var dragObj = null;
