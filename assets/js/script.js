@@ -1,29 +1,55 @@
-var dragObj = null;
+$(function() {
 
-$("input[type=file]").on("change", function() {
-  // assuming there will only be a single file.
-  var file = this.files[0];       // Q: can you do something with the other attributes ?
+  $("input[type=file]").on("change", function() {
+    // assuming there will only be a single file.
+    var file = this.files[0];       // Q: can you do something with the other attributes ?
 
-  $(this).parent().css({
-    // URL object support - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
-    "background-image": "url("+ URL.createObjectURL(file) +")"
+    $(this).parent().css({
+      // URL object support - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+      "background-image": "url("+ URL.createObjectURL(file) +")"
+    });
   });
+
+  $(".item").on("click", function() {
+    var asset = $("<div>", {
+      id: "asset" + Math.floor(Math.random() * 1000),
+      class: "asset " + $(this).data("type")
+    }).css({
+      "top": Math.floor(Math.random() * 200),
+      "left": Math.floor(Math.random() * 500)
+    });
+
+    var btn_close = $("<div>", {
+      class: "closeButton"
+    }).css("visibility", "hidden");
+
+    var btn_edit = $("<div>", {
+      class: "editButton"
+    }).css("visibility", "hidden");
+
+    asset.append(btn_close, btn_edit);
+    asset.appendTo($("section#content"));
+  });
+
+  // make assset draggable
 });
+
+var dragObj = null;
 
 
 //on click on sidebar - create Assets
-document.getElementById("item1").addEventListener("click", function(){createAsset("narrative",true);}, false);
-document.getElementById("item2").addEventListener("click", function(){createAsset("blam", false);}, false);
-document.getElementById("item3").addEventListener("click", function(){createAsset("speachBubble", true);}, false);
-document.getElementById("item4").addEventListener("click", function(){createAsset("trollFace", false);}, false);
-document.getElementById("item5").addEventListener("click", function(){createAsset("bitchPlease", false);}, false);
+// document.getElementById("item1").addEventListener("click", function(){createAsset("narrative",true);}, false);
+// document.getElementById("item2").addEventListener("click", function(){createAsset("blam", false);}, false);
+// document.getElementById("item3").addEventListener("click", function(){createAsset("speachBubble", true);}, false);
+// document.getElementById("item4").addEventListener("click", function(){createAsset("trollFace", false);}, false);
+// document.getElementById("item5").addEventListener("click", function(){createAsset("bitchPlease", false);}, false);
 
 
 function createAsset(assetName, withTextNode) {
   var editMode = false;
 
   var asset = document.createElement("div");
-  asset.setAttribute("id",assetName);
+  asset.setAttribute("id", assetName);
 
   var closeButton = document.createElement("div");
   closeButton.setAttribute("class","closeButton");
@@ -93,11 +119,6 @@ function drag(e,obj,editMODE) {
   obj.style.position = "absolute";
 
   window.onmouseup = function(e) {
-    dragObj = null;
-    return;
-  }
-
-  obj.onmouseup = function(e) {
     dragObj = null;
     return;
   }
