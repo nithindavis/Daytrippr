@@ -20,22 +20,26 @@ $(function() {
     });
 
     var btn_close = $("<div>", {
-      class: "closeButton"
-    }).css("visibility", "hidden");
+      class: "btn_close"
+    }).hide().on("click", function() {
+      $(this).parent().remove();
+    });
 
     var btn_edit = $("<div>", {
-      class: "editButton"
-    }).css("visibility", "hidden");
+      class: "btn_edit"
+    }).hide();
+    // TODO: make content editable
 
     asset.append(btn_close, btn_edit);
     asset.appendTo($("section#content"));
     asset.draggable({ containment: "section#content", scroll: false });
-    // make asset editable
+    asset.hover(function(e) {
+      btn_edit.toggle();
+      btn_close.toggle();
+    });
   });
 
 });
-
-var dragObj = null;
 
 function createAsset(assetName, withTextNode) {
   var editMode = false;
@@ -67,69 +71,13 @@ function createAsset(assetName, withTextNode) {
     editButton.setAttribute("style","visibility:hidden");
     asset.appendChild(editButton);
 
-    asset.addEventListener("mouseover", function(){showControls(editButton);}, false);
-    asset.addEventListener("mouseout", function(){hideControls(editButton);}, false);
 
     editButton.addEventListener("click", function(){editMode=true;editTextNode(textContent);}, false);
   }
 
-  var targetArea = document.getElementById("ContentArea");
-  targetArea.appendChild(asset);
-
-
-  asset.addEventListener("mousedown", function(){drag(window.event,this,editMode);}, false);
-
-  closeButton.addEventListener("click", closeParent, false);
-
-  asset.addEventListener("mouseover", function(){showControls(closeButton);}, false);
-  asset.addEventListener("mouseout", function(){hideControls(closeButton);}, false);
 }
 
 function editTextNode(obj) {
   obj.setAttribute("contenteditable","true");
-
-}
-
-function closeParent() {
-  this.parentElement.parentElement.removeChild(this.parentElement);
-}
-
-function showControls(control) {
-  control.setAttribute("style","visibility:visible;");
-}
-function hideControls(control){
-  control.setAttribute("style","visibility:hidden;");
-}
-
-
-
-function drag(e,obj,editMODE) {
-  var xOff = e.pageX-obj.getBoundingClientRect().left;
-  var yOff = e.pageY-obj.getBoundingClientRect().top;
-
-  dragObj = obj;
-  obj.style.position = "absolute";
-
-  window.onmouseup = function(e) {
-    dragObj = null;
-    return;
-  }
-
-  if(editMODE==true) {
-    dragObj = null;
-    return;
-  }
-
-  obj.onmousemove = function(e) {
-    var x = e.pageX;
-    var y = e.pageY;
-    if(dragObj==null) {
-      return;
-    }
-    obj.style.left = (x - xOff) + "px";
-    obj.style.top = (y - yOff) + "px";
-  }
-
-
 
 }
