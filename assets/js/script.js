@@ -19,24 +19,29 @@ $(function() {
       "left": Math.floor(Math.random() * 500)
     });
 
-    var btn_close = $("<div>", {
-      class: "btn_close"
-    }).hide().on("click", function() {
-      $(this).parent().remove();
-    });
-
-    var btn_edit = $("<div>", {
-      class: "btn_edit"
+    var action_btns = $("<div>", {
+      class: "btn_action_container",
     }).hide();
-    // TODO: make content editable
 
-    asset.append(btn_close, btn_edit);
+    var btn_close = $("<div>", {
+      class: "btn_close btn_action"
+    }).on("click", function() {
+      $(this).closest(".asset").remove();
+    }).appendTo(action_btns);
+
+    if($(this).data("editable")) {
+      asset.append("<p>").attr("contenteditable", "true");
+      var btn_edit = $("<div>", {
+        class: "btn_edit btn_action"
+      }).appendTo(action_btns);
+    }
+
+    asset.append(action_btns);
     asset.appendTo($("section#content"));
     asset.draggable({ containment: "section#content", scroll: false });
-    asset.hover(function(e) {
-      btn_edit.toggle();
-      btn_close.toggle();
-    });
+    asset.hover(function() {
+      action_btns.toggle();
+    })
   });
 
 });
