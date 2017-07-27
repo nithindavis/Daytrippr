@@ -30,7 +30,9 @@ $(function() {
     }).appendTo(action_btns);
 
     if($(this).data("editable")) {
-      asset.append("<p>").attr("contenteditable", "true");
+      asset.append("<p>").attr("contenteditable", "true")
+        .addClass("asset_txt");
+
       var btn_edit = $("<div>", {
         class: "btn_edit btn_action"
       }).appendTo(action_btns);
