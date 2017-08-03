@@ -1,4 +1,8 @@
 $(function() {
+  // localStorage.clear();
+
+  // initially re-load from cache
+  loadFromCache();
 
   $("input[type=file]").on("change", function() {
     // assuming there will only be a single file.
@@ -11,12 +15,24 @@ $(function() {
   });
 
   $(".item").on("click", function() {
-    var asset = $("<div>", {
-      id: "asset" + Math.floor(Math.random() * 1000),
-      class: "asset " + $(this).data("type")
-    }).css({
+
+    // generate properties
+    var assetProps = {
+      "id": "asset" + Math.floor(Math.random() * 1000),
+      "data-type": $(this).data("type"),
+      "left": Math.floor(Math.random() * 500),
       "top": Math.floor(Math.random() * 200),
-      "left": Math.floor(Math.random() * 500)
+      "class": "asset " + $(this).data("type")
+    };
+
+    // create the asset with assigned properties
+    var asset = $("<div>", {
+      id: assetProps['id'],
+      class: assetProps['class'],
+      "data-type": assetProps['data-type']
+    }).css({
+      "top": assetProps['top'],
+      "left": assetProps['left']
     });
 
     var action_btns = $("<div>", {
@@ -30,6 +46,7 @@ $(function() {
     }).appendTo(action_btns);
 
     if($(this).data("editable")) {
+      assetProps['editable'] = true;
       asset.append("<p>").attr("contenteditable", "true")
         .addClass("asset_txt");
 
@@ -38,14 +55,56 @@ $(function() {
       }).appendTo(action_btns);
     }
 
+
     asset.append(action_btns);
     asset.appendTo($("section#content"));
-    asset.draggable({ containment: "section#content", scroll: false });
+    asset.draggable({
+      containment: "section#content",
+      scroll: false,
+      drag: function(evt) {
+      },
+      stop: function(evt) {
+        // update cache
+        var currElem = $(this);
+        updateCache(currElem.attr("id"), {
+          id: currElem.attr('id'),
+          left: currElem.offset()['left'],
+          top: currElem.offset()['top'],
+          class: currElem.attr('class'),
+          'data-type': currElem.data('type')
+        })
+      }
+    });
     asset.hover(function() {
       action_btns.toggle();
-    })
+    });
+
+    updateCache(assetProps.id, assetProps);
   });
 
+
+  function updateCache(id, elemObj) {
+    if(localStorage[id]) {
+      // console.log("yes =======>>>", localStorage[id]);
+      localStorage[id] = JSON.stringify(elemObj);
+    }
+    else
+      localStorage.setItem(id, JSON.stringify(elemObj));
+  }
+
+  function loadFromCache() {
+    var cache = localStorage;
+    var contentDiv = $("#content");
+    if(cache.length > 0) {
+      for(elem in cache) {
+        var elemProps = JSON.parse(cache[elem])
+        var elem = $("<div>", elemProps)
+        elem.offset({ "left": elemProps["left"], "top": elemProps["top"] })
+        console.log(elem);
+        contentDiv.append(elem);
+      }
+    }
+  }
 });
 
 function createAsset(assetName, withTextNode) {
@@ -60,8 +119,6 @@ function createAsset(assetName, withTextNode) {
   asset.appendChild(closeButton);
 
   if(withTextNode) {
-    //
-
     //text content area
     // var newContent = document.createTextNode("Hi, I'm a new Narrative Box");
     // asset.appendChild(newContent);
@@ -82,9 +139,8 @@ function createAsset(assetName, withTextNode) {
     editButton.addEventListener("click", function(){editMode=true;editTextNode(textContent);}, false);
   }
 
-}
+  function editTextNode(obj) {
+    obj.setAttribute("contenteditable","true");
 
-function editTextNode(obj) {
-  obj.setAttribute("contenteditable","true");
-
+  }
 }
