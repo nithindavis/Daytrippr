@@ -24,6 +24,11 @@ $(function() {
     });
   });
 
+  function removeFromCache(id) {
+    if(localStorage[id]) {
+      delete localStorage[id];
+    }
+  }
 
   function updateCache(id, elemObj) {
     if(localStorage[id]) {
@@ -39,10 +44,7 @@ $(function() {
     if(cache.length > 0) {
       for(elem in cache) {
         var elemProps = JSON.parse(cache[elem]);
-        createAssets(elemProps)
-        // var elem = $("<div>", elemProps)
-        // elem.offset({ "left": elemProps["left"], "top": elemProps["top"] })
-        // contentDiv.append(elem);
+        createAssets(elemProps);
       }
     }
   }
@@ -81,13 +83,14 @@ $(function() {
     var btn_close = $("<div>", {
       class: "btn_close btn_action"
     }).on("click", function() {
-      $(this).closest(".asset").remove();
+      var asset = $(this).closest(".asset");
+      asset.remove();
+      removeFromCache(asset.attr("id"));
     }).appendTo(action_btns);
 
     if(config.editable) {
       assetProps['editable'] = true;
-      asset.append($("<p>").attr("contenteditable", "true")
-        .addClass("asset_txt"))
+      asset.append($("<p>").attr("contenteditable", "true").addClass("asset_txt"));
       var btn_edit = $("<div>", {
         class: "btn_edit btn_action"
       }).appendTo(action_btns);
@@ -110,6 +113,7 @@ $(function() {
           editable: (currElem.data('editable')) ? true : false
         };
         console.log(updatedAssetProps);
+        // update cache after element is moved around
         updateCache(currElem.attr("id"), updatedAssetProps);
       }
     });
@@ -117,7 +121,7 @@ $(function() {
       action_btns.toggle();
     });
 
-    console.log(assetProps);
+    // update cache after element is loaded
     updateCache(assetProps.id, assetProps);
   }
 
