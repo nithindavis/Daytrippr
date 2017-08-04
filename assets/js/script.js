@@ -16,23 +16,62 @@ $(function() {
 
   $(".item").on("click", function() {
 
-    // generate properties
+    var selectedType = $(this).data("type");
+    var isEditable = ($(this).data("editable")) ? true : false;
+    createAssets({
+      type: selectedType,
+      editable: isEditable
+    });
+  });
+
+
+  function updateCache(id, elemObj) {
+    if(localStorage[id]) {
+      localStorage[id] = JSON.stringify(elemObj);
+    }
+    else
+      localStorage.setItem(id, JSON.stringify(elemObj));
+  }
+
+  function loadFromCache() {
+    var cache = localStorage;
+    var contentDiv = $("#content");
+    if(cache.length > 0) {
+      for(elem in cache) {
+        var elemProps = JSON.parse(cache[elem]);
+        createAssets(elemProps)
+        // var elem = $("<div>", elemProps)
+        // elem.offset({ "left": elemProps["left"], "top": elemProps["top"] })
+        // contentDiv.append(elem);
+      }
+    }
+  }
+
+  /* given a set of properties, returns an array of jquery elems */
+  function createAssets(config) {
+    if(!config.type) { 
+      console.error("You have to specify a type of element to create.");
+      return 0;
+    }
+    // merge config with assetProps
     var assetProps = {
-      "id": "asset" + Math.floor(Math.random() * 1000),
-      "data-type": $(this).data("type"),
-      "left": Math.floor(Math.random() * 500),
-      "top": Math.floor(Math.random() * 200),
-      "class": "asset " + $(this).data("type")
+      "type": config.type,
+      "editable": config.editable,
+      "id": config.id || "asset" + Math.floor(Math.random() * 1000),
+      "left": config.left || Math.floor(Math.random() * 500),
+      "top": config.top || Math.floor(Math.random() * 200),
+      "class": config.class || "asset " + config.type
     };
 
     // create the asset with assigned properties
     var asset = $("<div>", {
       id: assetProps['id'],
       class: assetProps['class'],
-      "data-type": assetProps['data-type']
-    }).css({
-      "top": assetProps['top'],
-      "left": assetProps['left']
+      "data-type": assetProps['type'],
+      "data-editable": assetProps['editable']
+    }).offset({
+      "left": assetProps['left'],
+      "top": assetProps['top']
     });
 
     var action_btns = $("<div>", {
@@ -45,64 +84,41 @@ $(function() {
       $(this).closest(".asset").remove();
     }).appendTo(action_btns);
 
-    if($(this).data("editable")) {
+    if(config.editable) {
       assetProps['editable'] = true;
-      asset.append("<p>").attr("contenteditable", "true")
-        .addClass("asset_txt");
-
+      asset.append($("<p>").attr("contenteditable", "true")
+        .addClass("asset_txt"))
       var btn_edit = $("<div>", {
         class: "btn_edit btn_action"
       }).appendTo(action_btns);
     }
-
 
     asset.append(action_btns);
     asset.appendTo($("section#content"));
     asset.draggable({
       containment: "section#content",
       scroll: false,
-      drag: function(evt) {
-      },
       stop: function(evt) {
         // update cache
         var currElem = $(this);
-        updateCache(currElem.attr("id"), {
+        var updatedAssetProps = {
           id: currElem.attr('id'),
           left: currElem.offset()['left'],
           top: currElem.offset()['top'],
           class: currElem.attr('class'),
-          'data-type': currElem.data('type')
-        })
+          type: currElem.data('type'),
+          editable: (currElem.data('editable')) ? true : false
+        };
+        console.log(updatedAssetProps);
+        updateCache(currElem.attr("id"), updatedAssetProps);
       }
     });
     asset.hover(function() {
       action_btns.toggle();
     });
 
+    console.log(assetProps);
     updateCache(assetProps.id, assetProps);
-  });
-
-
-  function updateCache(id, elemObj) {
-    if(localStorage[id]) {
-      // console.log("yes =======>>>", localStorage[id]);
-      localStorage[id] = JSON.stringify(elemObj);
-    }
-    else
-      localStorage.setItem(id, JSON.stringify(elemObj));
   }
 
-  function loadFromCache() {
-    var cache = localStorage;
-    var contentDiv = $("#content");
-    if(cache.length > 0) {
-      for(elem in cache) {
-        var elemProps = JSON.parse(cache[elem])
-        var elem = $("<div>", elemProps)
-        elem.offset({ "left": elemProps["left"], "top": elemProps["top"] })
-        console.log(elem);
-        contentDiv.append(elem);
-      }
-    }
-  }
 });
