@@ -1,5 +1,8 @@
 $(function() {
-  // localStorage.clear();
+    // localStorage.clear();
+  $("#clear-cache").on("click", function() {
+    localStorage.clear();
+  })
 
   // initially re-load from cache
   loadFromCache();
@@ -7,7 +10,6 @@ $(function() {
   $("input[type=file]").on("change", function() {
     // assuming there will only be a single file.
     var file = this.files[0];       // Q: can you do something with the other attributes ?
-
     $(this).parent().css({
       // URL object support - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
       "background-image": "url("+ URL.createObjectURL(file) +")"
@@ -15,7 +17,6 @@ $(function() {
   });
 
   $(".item").on("click", function() {
-
     var selectedType = $(this).data("type");
     var isEditable = ($(this).data("editable")) ? true : false;
     createAssets({
@@ -36,6 +37,10 @@ $(function() {
     }
     else
       localStorage.setItem(id, JSON.stringify(elemObj));
+  }
+
+  function getFromCache(id) {
+    return JSON.parse(localStorage[id]);
   }
 
   function loadFromCache() {
@@ -62,7 +67,8 @@ $(function() {
       "id": config.id || "asset" + Math.floor(Math.random() * 1000),
       "left": config.left || Math.floor(Math.random() * 500),
       "top": config.top || Math.floor(Math.random() * 200),
-      "class": config.class || "asset " + config.type
+      "class": config.class || "asset " + config.type,
+      "text": config.text || ""
     };
 
     // create the asset with assigned properties
@@ -90,7 +96,17 @@ $(function() {
 
     if(config.editable) {
       assetProps['editable'] = true;
-      asset.append($("<p>").attr("contenteditable", "true").addClass("asset_txt"));
+      asset.append($("<p>")
+        .on("blur", function() {
+          // update the cache with the content
+          var currAssetID = $(this).closest(".asset").attr("id");
+          var currAssetProp = getFromCache(currAssetID);
+          currAssetProp.text = $(this).text();
+          updateCache(currAssetID, currAssetProp);
+        })
+        .text(assetProps["text"])
+        .attr("contenteditable", "true")
+        .addClass("asset_txt"));
       var btn_edit = $("<div>", {
         class: "btn_edit btn_action"
       }).appendTo(action_btns);
@@ -110,9 +126,9 @@ $(function() {
           top: currElem.offset()['top'],
           class: currElem.attr('class'),
           type: currElem.data('type'),
-          editable: (currElem.data('editable')) ? true : false
+          editable: (currElem.data('editable')) ? true : false,
+          text: currElem.text()
         };
-        console.log(updatedAssetProps);
         // update cache after element is moved around
         updateCache(currElem.attr("id"), updatedAssetProps);
       }
@@ -121,6 +137,7 @@ $(function() {
       action_btns.toggle();
     });
 
+    console.log(assetProps);
     // update cache after element is loaded
     updateCache(assetProps.id, assetProps);
   }
