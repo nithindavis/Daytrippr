@@ -1,5 +1,5 @@
 $(function() {
-    // localStorage.clear();
+  // localStorage.clear();
   $("#clear-cache").on("click", function() {
     localStorage.clear();
   })
@@ -10,10 +10,15 @@ $(function() {
   $("input[type=file]").on("change", function() {
     // assuming there will only be a single file.
     var file = this.files[0];       // Q: can you do something with the other attributes ?
-    $(this).parent().css({
-      // URL object support - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
-      "background-image": "url("+ URL.createObjectURL(file) +")"
+    var reader = new FileReader();
+    var $imgcontainer = $(this).parent();
+    reader.addEventListener("load", function(evt) {
+      // `reader.result` is the same as `evt.target.result`
+      $imgcontainer.css("background-image", "url("+ reader.result +")");
+      localStorage.setItem($imgcontainer.attr("id"), reader.result);
     });
+    // this line will trigger the "load" and "loadend" event
+    reader.readAsDataURL(file);
   });
 
   $(".item").on("click", function() {
@@ -137,9 +142,7 @@ $(function() {
       action_btns.toggle();
     });
 
-    console.log(assetProps);
     // update cache after element is loaded
     updateCache(assetProps.id, assetProps);
   }
-
 });
