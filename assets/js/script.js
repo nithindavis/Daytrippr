@@ -2,7 +2,8 @@ $(function() {
   // localStorage.clear();
   $("#clear-cache").on("click", function() {
     localStorage.clear();
-  })
+    // remove all existing assets & bgimages which are already set.
+  });
 
   // initially re-load from cache
   loadFromCache();
@@ -14,8 +15,14 @@ $(function() {
     var $imgcontainer = $(this).parent();
     reader.addEventListener("load", function(evt) {
       // `reader.result` is the same as `evt.target.result`
-      $imgcontainer.css("background-image", "url("+ reader.result +")");
-      localStorage.setItem($imgcontainer.attr("id"), reader.result);
+      createBackgrounds({
+        "type": "bg",
+        "id": $imgcontainer.attr("id"),
+        "file": file,
+        "blob": reader.result
+      });
+      // $imgcontainer.css("background-image", "url("+ reader.result +")");
+      // localStorage.setItem($imgcontainer.attr("id"), reader.result);
     });
     // this line will trigger the "load" and "loadend" event
     reader.readAsDataURL(file);
@@ -40,8 +47,9 @@ $(function() {
     if(localStorage[id]) {
       localStorage[id] = JSON.stringify(elemObj);
     }
-    else
+    else {
       localStorage.setItem(id, JSON.stringify(elemObj));
+    }
   }
 
   function getFromCache(id) {
@@ -54,14 +62,32 @@ $(function() {
     if(cache.length > 0) {
       for(elem in cache) {
         var elemProps = JSON.parse(cache[elem]);
-        createAssets(elemProps);
+        if(elemProps.type === "bg")
+          createBackgrounds(elemProps);
+        else
+          createAssets(elemProps);
       }
     }
   }
 
+  function createBackgrounds(config) {
+    if(!config.type) {
+      console.error("You have to specify a background image.");
+      return 0;
+    }
+    var bgProps = {
+      "type": config.type,
+      "id": config.id,
+      "file": config.file,
+      "blob": config.blob
+    };
+    $("#"+ bgProps.id).css("background-image", "url("+ bgProps.blob +")");
+    updateCache(config.id, bgProps);
+  }
+
   /* given a set of properties, returns an array of jquery elems */
   function createAssets(config) {
-    if(!config.type) { 
+    if(!config.type) {
       console.error("You have to specify a type of element to create.");
       return 0;
     }
