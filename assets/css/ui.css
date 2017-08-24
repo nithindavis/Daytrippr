@@ -37,14 +37,13 @@ body {
 	/*filter: brightness(0);*/
 }
 
-#title {
+#page-title {
 	font-family: 'Suez One', serif;
 	color: #333;
   display: inline;
   font-size: 48px;
 	position: relative;
 	bottom: 26px;
-
 }
 
 .sidebar {

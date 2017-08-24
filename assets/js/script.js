@@ -1,3 +1,18 @@
+/*
+
+page-title:
+item: {
+  type
+  editable
+  id
+  left
+  top
+  class
+  text
+}
+
+*/
+
 $(function() {
   // localStorage.clear();
   $("#clear-cache").on("click", function() {
@@ -7,6 +22,14 @@ $(function() {
 
   // initially re-load from cache
   loadFromCache();
+
+  $("#page-title").on("blur", function() {
+    createPageTitle({
+      "id": $(this).attr("id"),
+      "type": "page-title",
+      "title": $(this).text()
+    });
+  })
 
   $("input[type=file]").on("change", function() {
     // assuming there will only be a single file.
@@ -43,12 +66,12 @@ $(function() {
     }
   }
 
-  function updateCache(id, elemObj) {
-    if(localStorage[id]) {
-      localStorage[id] = JSON.stringify(elemObj);
+  function updateCache(cacheKey, cacheObj) {
+    if(localStorage[cacheKey]) {
+      localStorage[cacheKey] = JSON.stringify(cacheObj);
     }
     else {
-      localStorage.setItem(id, JSON.stringify(elemObj));
+      localStorage.setItem(cacheKey, JSON.stringify(cacheObj));
     }
   }
 
@@ -64,10 +87,23 @@ $(function() {
         var elemProps = JSON.parse(cache[elem]);
         if(elemProps.type === "bg")
           createBackgrounds(elemProps);
+        else if(elemProps.type === "page-title") {
+          createPageTitle(elemProps);
+        }
         else
           createAssets(elemProps);
       }
     }
+  }
+
+  function createPageTitle(config) {
+    if(!config.type) {
+      console.error("You have to specify a background image.");
+      return 0;
+    }
+    var pageTitle = config.title || "The Age of the Jaguar."
+    $("#"+ config.id).text(pageTitle);
+    updateCache("pageTitle", config);
   }
 
   function createBackgrounds(config) {
