@@ -1,18 +1,3 @@
-/*
-
-page-title:
-item: {
-  type
-  editable
-  id
-  left
-  top
-  class
-  text
-}
-
-*/
-
 $(function() {
   // localStorage.clear();
   $("#clear-cache").on("click", function() {
