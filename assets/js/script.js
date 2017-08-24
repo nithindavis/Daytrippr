@@ -39,9 +39,11 @@ $(function() {
   $(".item").on("click", function() {
     var selectedType = $(this).data("type");
     var isEditable = ($(this).data("editable")) ? true : false;
+    var assetType = $(this).data("asset-type");
     createAssets({
-      type: selectedType,
-      editable: isEditable
+      "type": selectedType,
+      "editable": isEditable,
+      "asset-type": assetType
     });
   });
 
@@ -70,13 +72,13 @@ $(function() {
     if(cache.length > 0) {
       for(elem in cache) {
         var elemProps = JSON.parse(cache[elem]);
-        if(elemProps.type === "bg")
-          createBackgrounds(elemProps);
-        else if(elemProps.type === "page-title") {
-          createPageTitle(elemProps);
-        }
-        else
-          createAssets(elemProps);
+        var mapping = {
+          "bg": createBackgrounds,
+          "page-title": createPageTitle,
+          "asset": createAssets
+        };
+        // invoke appropriate render function based on type
+        mapping[elemProps.type](elemProps);
       }
     }
   }
@@ -114,12 +116,13 @@ $(function() {
     }
     // merge config with assetProps
     var assetProps = {
-      "type": config.type,
+      "type": config["type"],
+      "asset-type": config["asset-type"],
       "editable": config.editable,
       "id": config.id || "asset" + Math.floor(Math.random() * 1000),
       "left": config.left || Math.floor(Math.random() * 500),
       "top": config.top || Math.floor(Math.random() * 200),
-      "class": config.class || "asset " + config.type,
+      "class": config.class || "asset " + config["asset-type"],
       "text": config.text || ""
     };
 
@@ -128,6 +131,7 @@ $(function() {
       id: assetProps['id'],
       class: assetProps['class'],
       "data-type": assetProps['type'],
+      "data-asset-type": assetProps['asset-type'],
       "data-editable": assetProps['editable']
     }).offset({
       "left": assetProps['left'],
@@ -173,13 +177,14 @@ $(function() {
         // update cache
         var currElem = $(this);
         var updatedAssetProps = {
-          id: currElem.attr('id'),
-          left: currElem.offset()['left'],
-          top: currElem.offset()['top'],
-          class: currElem.attr('class'),
-          type: currElem.data('type'),
-          editable: (currElem.data('editable')) ? true : false,
-          text: currElem.text()
+          "id": currElem.attr('id'),
+          "left": currElem.offset()['left'],
+          "top": currElem.offset()['top'],
+          "class": currElem.attr('class'),
+          "type": currElem.data('type'),
+          "asset-type": currElem.data('asset-type'),
+          "editable": (currElem.data('editable')) ? true : false,
+          "text": currElem.text()
         };
         // update cache after element is moved around
         updateCache(currElem.attr("id"), updatedAssetProps);
