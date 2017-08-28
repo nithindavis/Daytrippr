@@ -1,5 +1,5 @@
 $(function() {
-  var Cache = (function() {
+  var ComicCache = (function() {
     // var contentDiv = $("#content");
 
     function remove(id) {
@@ -51,11 +51,11 @@ $(function() {
 
   $("#clear-cache").on("click", function() {
     // remove all existing assets & bgimages which are already set.
-    Cache.clear();
+    ComicCache.clear();
   });
 
   // initially re-load from cache
-  Cache.load();
+  ComicCache.load();
 
   $("#page-title").on("blur", function() {
     createPageTitle({
@@ -104,7 +104,7 @@ $(function() {
     }
     var pageTitle = config.title || "The Age of the Jaguar."
     $("#"+ config.id).text(pageTitle);
-    Cache.update("pageTitle", config);
+    ComicCache.update("pageTitle", config);
   }
 
   /* uploads comic frame images and stores it in cache */
@@ -120,7 +120,7 @@ $(function() {
       "blob": config.blob
     };
     $("#"+ bgProps.id).css("background-image", "url("+ bgProps.blob +")");
-    Cache.update(config.id, bgProps);
+    ComicCache.update(config.id, bgProps);
   }
 
   /* given a set of properties, returns an array of jquery elems */
@@ -162,7 +162,7 @@ $(function() {
     }).on("click", function() {
       var asset = $(this).closest(".asset");
       asset.remove();
-      Cache.remove(asset.attr("id"));
+      ComicCache.remove(asset.attr("id"));
     }).appendTo(action_btns);
 
     if(config.editable) {
@@ -171,9 +171,9 @@ $(function() {
         .on("blur", function() {
           // update the cache with the content
           var currAssetID = $(this).closest(".asset").attr("id");
-          var currAssetProp = Cache.get(currAssetID);
+          var currAssetProp = ComicCache.get(currAssetID);
           currAssetProp.text = $(this).text();
-          Cache.update(currAssetID, currAssetProp);
+          ComicCache.update(currAssetID, currAssetProp);
         })
         .text(assetProps["text"])
         .attr("contenteditable", "true")
@@ -202,7 +202,7 @@ $(function() {
           "text": currElem.text()
         };
         // update cache after element is moved around
-        Cache.update(currElem.attr("id"), updatedAssetProps);
+        ComicCache.update(currElem.attr("id"), updatedAssetProps);
       }
     });
     asset.hover(function() {
@@ -210,6 +210,6 @@ $(function() {
     });
 
     // update cache after element is loaded
-    Cache.update(assetProps.id, assetProps);
+    ComicCache.update(assetProps.id, assetProps);
   }
 });
