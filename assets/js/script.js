@@ -1,12 +1,61 @@
 $(function() {
-  // localStorage.clear();
+  var Cache = (function() {
+    // var contentDiv = $("#content");
+
+    function remove(id) {
+      if(localStorage[id]) {
+        delete localStorage[id];
+      }
+    }
+
+    function load() {
+      if(localStorage.length > 0) {
+        for(elem in localStorage) {
+          var elemProps = JSON.parse(localStorage[elem]);
+          var mapping = {
+            "bg": createBackgrounds,
+            "page-title": createPageTitle,
+            "asset": createAssets
+          };
+          // invoke appropriate render function based on type
+          mapping[elemProps.type](elemProps);
+        }
+      }
+    }
+
+    function update(cacheKey, cacheObj) {
+      if(localStorage[cacheKey]) {
+        localStorage[cacheKey] = JSON.stringify(cacheObj);
+      }
+      else {
+        localStorage.setItem(cacheKey, JSON.stringify(cacheObj));
+      }
+    }
+
+    function get(id) {
+      return JSON.parse(localStorage[id]);
+    }
+
+    function clear() {
+      localStorage.clear();
+    }
+
+    return {
+      load: load,
+      remove: remove,
+      update: update,
+      get: get,
+      clear: clear
+    }
+  })();
+
   $("#clear-cache").on("click", function() {
-    localStorage.clear();
     // remove all existing assets & bgimages which are already set.
+    Cache.clear();
   });
 
   // initially re-load from cache
-  loadFromCache();
+  Cache.load();
 
   $("#page-title").on("blur", function() {
     createPageTitle({
@@ -14,7 +63,7 @@ $(function() {
       "type": "page-title",
       "title": $(this).text()
     });
-  })
+  });
 
   $("input[type=file]").on("change", function() {
     // assuming there will only be a single file.
@@ -47,42 +96,7 @@ $(function() {
     });
   });
 
-  function removeFromCache(id) {
-    if(localStorage[id]) {
-      delete localStorage[id];
-    }
-  }
-
-  function updateCache(cacheKey, cacheObj) {
-    if(localStorage[cacheKey]) {
-      localStorage[cacheKey] = JSON.stringify(cacheObj);
-    }
-    else {
-      localStorage.setItem(cacheKey, JSON.stringify(cacheObj));
-    }
-  }
-
-  function getFromCache(id) {
-    return JSON.parse(localStorage[id]);
-  }
-
-  function loadFromCache() {
-    var cache = localStorage;
-    var contentDiv = $("#content");
-    if(cache.length > 0) {
-      for(elem in cache) {
-        var elemProps = JSON.parse(cache[elem]);
-        var mapping = {
-          "bg": createBackgrounds,
-          "page-title": createPageTitle,
-          "asset": createAssets
-        };
-        // invoke appropriate render function based on type
-        mapping[elemProps.type](elemProps);
-      }
-    }
-  }
-
+  /* caches the comic title */
   function createPageTitle(config) {
     if(!config.type) {
       console.error("You have to specify a background image.");
@@ -90,9 +104,10 @@ $(function() {
     }
     var pageTitle = config.title || "The Age of the Jaguar."
     $("#"+ config.id).text(pageTitle);
-    updateCache("pageTitle", config);
+    Cache.update("pageTitle", config);
   }
 
+  /* uploads comic frame images and stores it in cache */
   function createBackgrounds(config) {
     if(!config.type) {
       console.error("You have to specify a background image.");
@@ -105,7 +120,7 @@ $(function() {
       "blob": config.blob
     };
     $("#"+ bgProps.id).css("background-image", "url("+ bgProps.blob +")");
-    updateCache(config.id, bgProps);
+    Cache.update(config.id, bgProps);
   }
 
   /* given a set of properties, returns an array of jquery elems */
@@ -147,7 +162,7 @@ $(function() {
     }).on("click", function() {
       var asset = $(this).closest(".asset");
       asset.remove();
-      removeFromCache(asset.attr("id"));
+      Cache.remove(asset.attr("id"));
     }).appendTo(action_btns);
 
     if(config.editable) {
@@ -156,9 +171,9 @@ $(function() {
         .on("blur", function() {
           // update the cache with the content
           var currAssetID = $(this).closest(".asset").attr("id");
-          var currAssetProp = getFromCache(currAssetID);
+          var currAssetProp = Cache.get(currAssetID);
           currAssetProp.text = $(this).text();
-          updateCache(currAssetID, currAssetProp);
+          Cache.update(currAssetID, currAssetProp);
         })
         .text(assetProps["text"])
         .attr("contenteditable", "true")
@@ -187,7 +202,7 @@ $(function() {
           "text": currElem.text()
         };
         // update cache after element is moved around
-        updateCache(currElem.attr("id"), updatedAssetProps);
+        Cache.update(currElem.attr("id"), updatedAssetProps);
       }
     });
     asset.hover(function() {
@@ -195,6 +210,6 @@ $(function() {
     });
 
     // update cache after element is loaded
-    updateCache(assetProps.id, assetProps);
+    Cache.update(assetProps.id, assetProps);
   }
 });
