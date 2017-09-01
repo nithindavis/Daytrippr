@@ -65,26 +65,9 @@ $(function() {
     });
   });
 
-  $("input[type=file]").on("change", function() {
-    // assuming there will only be a single file.
-    var file = this.files[0];       // Q: can you do something with the other attributes ?
-    var reader = new FileReader();
-    var $imgcontainer = $(this).parent();
-    reader.addEventListener("load", function(evt) {
-      // `reader.result` is the same as `evt.target.result`
-      createBackgrounds({
-        "type": "bg",
-        "id": $imgcontainer.attr("id"),
-        "file": file,
-        "blob": reader.result
-      });
-      // $imgcontainer.css("background-image", "url("+ reader.result +")");
-      // localStorage.setItem($imgcontainer.attr("id"), reader.result);
-    });
-    // this line will trigger the "load" and "loadend" event
-    reader.readAsDataURL(file);
-  });
-
+  $("input[type=file]").on("change", evtChangeBackground);
+  $(".image-url").on("change", evtChangeBackground);
+  
   $(".item").on("click", function() {
     var selectedType = $(this).data("type");
     var isEditable = ($(this).data("editable")) ? true : false;
@@ -95,6 +78,34 @@ $(function() {
       "asset-type": assetType
     });
   });
+
+  function evtChangeBackground(evt) {
+    var uploadType = $(this).attr("type");
+    var $imgcontainer = $(this).parent();
+    
+    if(uploadType === "file") {
+      // assuming there will only be a single file.
+      var file = this.files[0];       // Q: can you do something with the other attributes ?
+      var reader = new FileReader();
+      reader.addEventListener("load", function(evt) {
+        // `reader.result` is the same as `evt.target.result`
+        createBackgrounds({
+          "type": "bg",
+          "id": $imgcontainer.attr("id"),
+          "blob": reader.result
+        });
+      });
+      // this line will trigger the "load" and "loadend" event
+      reader.readAsDataURL(file);
+    } else if(uploadType === "text") {
+      $imgcontainer.css("background-image", "url("+ $(this).val() +")");
+      createBackgrounds({
+        "type": "bg",
+        "id": $imgcontainer.attr("id"),
+        "blob": $(this).val()
+      });
+    }
+  }
 
   /* caches the comic title */
   function createPageTitle(config) {
@@ -116,7 +127,6 @@ $(function() {
     var bgProps = {
       "type": config.type,
       "id": config.id,
-      "file": config.file,
       "blob": config.blob
     };
     $("#"+ bgProps.id).css("background-image", "url("+ bgProps.blob +")");
@@ -212,4 +222,5 @@ $(function() {
     // update cache after element is loaded
     ComicCache.update(assetProps.id, assetProps);
   }
+
 });
