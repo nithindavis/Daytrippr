@@ -64,10 +64,8 @@ $(function() {
       "title": $(this).text()
     });
   });
-
   $("input[type=file]").on("change", evtChangeBackground);
   $(".image-url").on("change", evtChangeBackground);
-  
   $(".item").on("click", function() {
     var selectedType = $(this).data("type");
     var isEditable = ($(this).data("editable")) ? true : false;
