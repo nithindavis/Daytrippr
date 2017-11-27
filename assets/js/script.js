@@ -129,7 +129,11 @@ $(function() {
       "id": config.id,
       "blob": config.blob
     };
-    $("#"+ bgProps.id).css("background-image", "url("+ bgProps.blob +")");
+    $("#"+ bgProps.id).css({
+      "background-image": "url("+ bgProps.blob +")",
+      "background-size": "contain",
+      "background-repeat": "no-repeat"
+    });
     ComicCache.update(config.id, bgProps);
   }
 
