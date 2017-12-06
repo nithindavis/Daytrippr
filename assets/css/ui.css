@@ -47,7 +47,7 @@ body {
 
 }
 
-#sideBar {
+.sidebar {
   background-color: #272930;
   width: 80px;
   height: 100%;
@@ -81,11 +81,11 @@ body {
 .item:active img{
 	filter: brightness(100);
 }
-#ContentArea {
+
+#content {
   margin-left: 80px;
   margin-top: 99px;
   overflow: hidden;
-	/*position: relative;*/
 }
 
 .comicFrame {

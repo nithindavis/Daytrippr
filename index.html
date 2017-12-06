@@ -2,66 +2,67 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
-    <link rel="stylesheet" href="css/ui.css">
-    <link rel="stylesheet" href="css/assets.css">
-    <script type="text/javascript" src="js/script.js" defer ></script>
+    <title>Daytrippr</title>
+
     <link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Droid+Serif" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Suez+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <link href="assets/css/ui.css" rel="stylesheet">
+    <link href="assets/css/assets.css" rel="stylesheet">
   </head>
   <body>
 
-    <div id="sideBar">
-      <div class="item" id="item1">
-        <img src="img/narrative.svg">
+    <div class="sidebar">
+      <div class="item" data-type="narrative" data-editable="true">
+        <img src="assets/img/narrative.svg" />
       </div>
-      <div class="item" id="item2">
-        <img src="img/blam_icon.svg">
+      <div class="item" data-type="blam">
+        <img src="assets/img/blam_icon.svg" />
       </div>
-      <div class="item" id="item3">
-        <img src="img/speach_icon.svg">
+      <div class="item" data-type="speech_bubble" data-editable="true">
+        <img src="assets/img/speach_icon.svg" />
       </div>
-      <div class="item" id="item4">
-        <img src="img/troll_icon.svg">
+      <div class="item" data-type="troll_face">
+        <img src="assets/img/troll_icon.svg" />
       </div>
-      <div class="item" id="item5">
-        <img src="img/bitch_please_icon.svg">
+      <div class="item" data-type="bitch_please">
+        <img src="assets/img/bitch_please_icon.svg" />
       </div>
     </div>
 
     <div id="header">
-      <img src="img/daytrippr_logo.svg" height="80px "alt="">
+      <img src="assets/img/daytrippr_logo.svg" height="80px "alt="" />
       <h1 id="title" contenteditable="true">The age of the Jaguar.</h1>
     </div>
 
-    <section id="ContentArea">
+    <section id="content">
       <div class="comicFrame" id="frame1">
         <p>Upload an image or drag in a background over here.</p>
-        <input type="file" id="input1">
+        <input type="file" accept=".svg, .png, .jpeg, .jpg" />
       </div>
       <div class="comicFrame" id="frame2">
         <p>Upload an image or drag in a background over here.</p>
-        <input type="file" id="input2">
+        <input type="file" accept=".svg, .png, .jpeg, .jpg" />
       </div>
       <div class="comicFrame" id="frame3">
         <p>Upload an image or drag in a background over here.</p>
-        <input type="file" id="input3">
+        <input type="file" accept=".svg, .png, .jpeg, .jpg" />
       </div>
       <div class="comicFrame" id="frame4">
         <p>Upload an image or drag in a background over here.</p>
-        <input type="file" id="input4">
+        <input type="file" accept=".svg, .png, .jpeg, .jpg" />
       </div>
       <div class="comicFrame" id="frame5">
         <p>Upload an image or drag in a background over here.</p>
-        <input type="file" id="input5">
+        <input type="file" accept=".svg, .png, .jpeg, .jpg" />
       </div>
-
-
     </section>
 
 
-
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="assets/js/script.js" defer ></script>
   </body>
 </html>
